@@ -2,6 +2,7 @@ import time
 
 import numpy as np
 import cv2
+import pytesseract
 from mss import mss, tools
 from PIL import Image
 
@@ -10,9 +11,9 @@ class VideoSource():
         self.video_boundary = None
         self.player_name_boundary = None
 
-    @staticmethod
-    def select_region(scene_title, original_scene, monitor, screen_x=1080, screen_y = 500):
-        reference_points = list()
+    def set_player_name(self, scene_title, original_scene, monitor, screen_x=1080, screen_y = 500):
+        self.player_reference_points = list()
+        reference_points = self.player_reference_points
         scene = np.array(original_scene)
 
         def click(event, x, y, flags, param):
@@ -21,7 +22,6 @@ class VideoSource():
 
             if len(reference_points) == 2:
                 cv2.rectangle(scene, reference_points[0], reference_points[1], (0, 255, 0), 2)
-
                 cv2.imshow(scene_title, scene)
 
         selection_disp = cv2.namedWindow(scene_title, cv2.WINDOW_KEEPRATIO)
@@ -30,21 +30,12 @@ class VideoSource():
         cv2.setMouseCallback(scene_title, click)
         cv2.imshow(scene_title, scene)
 
-        if len(reference_points) == 2:
-            key = cv2.waitKey(1) & 0xFF
-            # if key == ord('r'):
-            #     scene = np.array(original_scene)
-            #     reference_points = list()
-            if key == ord('f'):
-                monitor = {'top': reference_points[0][0],
-                           'left': reference_points[0][1],
-                           'width': reference_points[1][0] - reference_points[0][0],
-                           'height': reference_points[1][1] - reference_points[1][0]}
+
 
     def screen_cap(self):
         disp = cv2.namedWindow('game display', cv2.WINDOW_KEEPRATIO)
         cv2.moveWindow('game display', 1080, 125)
-        monitor = {'top': 0, 'left': 0, 'width': 640, 'height': 640}
+        monitor = {'top': 0, 'left': 0, 'width': 840, 'height': 540}
         name_monitor = None
 
         key = cv2.waitKey(1) & 0xFF
@@ -74,14 +65,40 @@ class VideoSource():
                 if key == ord('q'):
                     cv2.destroyAllWindows()
                     break
+                elif key == ord('w'):
+                    self.set_video_window()
+                elif key == ord('n'):
+                    self.set_player_name('player', img, self.player_name_boundary, 1080, 500)
                 elif key == ord('s'):
-                    VideoSource.select_region('player', img, self.player_name_boundary, 1080, 500)
+                    reference_points = self.player_reference_points
+                    self.player_name_boundary = {'top': reference_points[0][0],
+                           'left': reference_points[0][1],
+                           'width': reference_points[1][0] - reference_points[0][0],
+                           'height': reference_points[1][1] - reference_points[1][0]}
+                    cv2.destroyWindow('player')
 
-                # name_monitor = {'top': bounds[0][0],
-                #                 'left': bounds[0][1],
-                #                 'width': bounds[1][0] - bounds[0][0],
-                #                 'height': bounds[1][1] - bounds[1][0]}
+    def process_player_name(self):
+        start = time.time()
+        #hard coded image path for testing
+        cv2.namedWindow('name', cv2.WINDOW_KEEPRATIO)
+        image = cv2.imread("red name copy.png")
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.threshold(gray,170,255,cv2.THRESH_TOZERO)[1]
+        cv2.imwrite('red erode copy.png', gray)
 
+
+        kernel = np.ones((3,3),np.uint8)
+        erosion = cv2.morphologyEx(gray, cv2.MORPH_OPEN, kernel)
+        #erosion = cv2.erode(gray,kernel,iterations = 1)
+
+        cv2.imshow('name', erosion)
+        cv2.waitKey(0)
+
+        cv2.imwrite("erosion red name copy copy.png", erosion)
+        text = pytesseract.image_to_string(Image.open("erosion red name copy copy.png"))
+        dur = time.time()-start
+        print(dur)
+        print(text)
 '''
     sct_img = sct.grab(monitor)
 
@@ -96,3 +113,4 @@ if __name__ == "__main__":
     vid = VideoSource()
     vid.screen_cap()
     print(vid.player_name_boundary)
+    #vid.process_player_name()
