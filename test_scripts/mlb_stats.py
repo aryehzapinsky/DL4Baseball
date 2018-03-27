@@ -1,10 +1,18 @@
 import base64
 import requests
 
+########################################################################
+# mlb_stats.py -- 
+# 	input: string last_name, string first_name
+#	returns: float SLG 
+#
+# See bottom lines for demonstration
+########################################################################
 
 url = 'https://api.mysportsfeeds.com/v1.2/pull/mlb/2017-regular/cumulative_player_stats.json'
 username = 'jsh2201'
 password = 'dl4cv'
+
 
 def get_slg(last, first):
 	global url, username, password
@@ -12,6 +20,7 @@ def get_slg(last, first):
 	slg = send_request(params, last, first)
 
 	return slg
+
 
 def send_request(params, last, first):
 	try:
@@ -37,7 +46,7 @@ def send_request(params, last, first):
 		return res['cumulativeplayerstats']['playerstatsentry'][0]['stats']['BatterSluggingPct']['#text']
 
 	except requests.exceptions.RequestException as err:
-		print('HTTP Request failed')
+		return('HTTP Request failed')
 
 
 
