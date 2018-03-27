@@ -4,6 +4,11 @@ import imutils
 import cv2
 from time import time, sleep
 
+###########################################################
+# screenshot.py 
+#	Simple script for iteratively taking screenshots
+###########################################################
+
 T = 3
 SNAPSHOTS = 10
 
