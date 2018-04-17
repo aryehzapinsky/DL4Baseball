@@ -6,6 +6,7 @@ from datetime import datetime
 import pathlib
 import queue
 import concurrent.futures
+import threading
 
 import numpy as np
 import cv2
@@ -69,7 +70,7 @@ def capture_image(screen_postion, delay, thumbnail_size, name_q, at_bat_q):
             name_q.put((resized, timestamp))
             at_bat_q.put((resized, timestamp))
 
-        #print("capture image thread {}- name_q: {}".format(timestamp, name_q.qsize()))
+        print("capture image thread {}- name_q: {}".format(timestamp, name_q.qsize()))
         time.sleep(delay)
 
 def parser(model_path, image_q, title_q):
@@ -97,7 +98,7 @@ def record_mapping(output, at_bat_title_q, name_title_q):
     print("Opening recorder file")
 
     with open(output, "a") as f:
-        player_name = name_title_q.get(block)
+        player_name = name_title_q.get()
         while True:
             if not name_title_q.empty():
                 player_name = name_title_q.get()
@@ -131,7 +132,7 @@ def start_pipeline(delay, thumbnail_size):
 
         name_executor = executor.submit(parser, name_model, name_image_q, name_title_q)
 
-        recorder_executor = executor.submit(record_mapping, record_mapping, at_bat_title_q, name_title_q)
+        recorder_executor = executor.submit(record_mapping, record_file, at_bat_title_q, name_title_q)
 
 
         image_capture_executor = executor.submit(capture_image,
@@ -143,23 +144,35 @@ def start_pipeline(delay, thumbnail_size):
 
 
         executor.shutdown()
-    """
+
     tasks = []
     tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
         parser, at_bat_model, at_bat_image_q, at_bat_title_q))
     tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
         parser, name_model, name_image_q, name_title_q))
     tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
-        record_mapping, record_mapping, at_bat_title_q, name_title_q))
+        record_mapping, record_file, at_bat_title_q, name_title_q))
     tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
-        capture_image,
-        SCREEN_POSITIONS.get('monitor_top_left'),
-        delay,
-        thumbnail_size,
-        name_image_q,
-        at_bat_image_q))
+        capture_image, SCREEN_POSITIONS.get('monitor_top_left'), delay, thumbnail_size, name_image_q, at_bat_image_q))
 
     concurrent.futures.wait(tasks)
+
+    """
+
+    at_bat_thread = threading.Thread(target=parser, name="at_bat",
+                                     args=(at_bat_model, at_bat_image_q, at_bat_title_q))
+    name_thread = threading.Thread(target=parser, name="player_name",
+                                   args=(name_model, name_image_q, name_title_q))
+    recorder_thread = threading.Thread(target=record_mapping, name="recorder",
+                                       args=(record_file, at_bat_title_q, name_title_q))
+    capture_thread = threading.Thread(target=capture_image, name="capture",
+                                      args=(SCREEN_POSITIONS.get('monitor_top_left'), delay, thumbnail_size, name_image_q, at_bat_image_q))
+
+    capture_thread.start()
+    at_bat_thread.start()
+    name_thread.start()
+    recorder_thread.start()
+
 
 if __name__ == "__main__":
     start_pipeline(1, (300, 300))
