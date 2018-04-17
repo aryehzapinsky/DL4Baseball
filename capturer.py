@@ -10,7 +10,6 @@ import cv2
 
 from mss import mss, tools
 
-import json
 
 SCREEN_POSITIONS = dict(
     monitor_top_left = {'top': 176, 'left': 100, 'width': 640, 'height': 360},
@@ -35,14 +34,6 @@ def capture_frame(thumbnail_size, samples, delay, base_folder):
 
             time.sleep(delay)
 
-def capture_image(screen_postion, delay, samples):
-    with mss() as sct:
-        img = np.array(sct.grab(screen_postion))
-
-        resized = cv2.resize(img, thumbnail_size)
-        filename = '{}/{}.png'.format(base_folder, datetime.now().strftime('%m_%d-%H-%M-%S'))
-
-
 def collect_first_dataset():
     top_level = pathlib.Path('./data_samples/').mkdir(exist_ok=True)
 
@@ -59,6 +50,20 @@ def collect_second_dataset():
     current_dump.mkdir()
     capture_frame((300,300), 7200, 1, './'+str(current_dump))
 
+def capture_image(screen_postion, delay, thumbnail_size, name_q, at_bat_q):
+    while True:
+        with mss() as sct:
+            img = np.array(sct.grab(screen_postion))
+
+            resized = cv2.resize(img, thumbnail_size)
+            timestamp = datetime.now().strftime('%m_%d-%H-%M-%S')
+
+            name_q.put((resized, timestamp))
+            at_bat_q.put((resized, timestamp))
+
+        print("timestamp")
+        time.sleep(delay)
+
 def parser(model_path, base_folder, image_q, title_q):
     model = load_model(model_path)
 
@@ -74,20 +79,23 @@ def parser(model_path, base_folder, image_q, title_q):
 def record_mapping(output, at_bat_title_q, name_title_q):
 
     player_name = name_title_q.get()
-
     while True:
         player_name = name_title_q.get() if not name_title_q.empty() else player_name
 
-        at_bat_img_title = at_bat_title_q.get() if not
+        if not at_bat_title_q.empty():
+            at_bat_img_title = at_bat_title_q.get()
+            output.write("{},{}\n".format(player_name, at_bat_img_title))
 
 
-
-def start_pipeline(thumbnail_size, samples, base_folder):
+def start_pipeline(delay, thumbnail_size):
 
     name_image_q = queue.Queue()
     at_bat_image_q = queue.Queue()
     name_title_q = queue.Queue()
     at_bat_title_q = queue.Queue()
+
+    at_bat_model = "./models/at_bat_net.hdf5"
+    name_model = "./models/namenet.hdf5"
 
     pathlib.Path('./matchups/').mkdir(exist_ok=True)
     pathlib.Path('./matchups/batters/').mkdir(exist_ok=True)
@@ -95,10 +103,13 @@ def start_pipeline(thumbnail_size, samples, base_folder):
     base_folder_batter = "./matchups/batters/"
     base_folder_batter = "./matchups/batters/"
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        image_capture_executor = executor.submit(capture_image, delay, thumbnail_size, name_image_q, at_bat_image_q)
         at_bat_executor = executor.submit(parser, at_bat_model, at_bat_image_q, at_bat_title_q)
-        name_executor = executor.submit(parse_name, name_image_q, name_title_q)
+        name_executor = executor.submit(parser, name_model, name_image_q, name_title_q)
         recorder_executor = executor.submit(record_mapping, at_bat_title_q, name_title_q)
 
 
+
 if __name__ == "__main__":
+    start_pipeline(0.4, (300, 300))
