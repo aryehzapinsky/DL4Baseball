@@ -85,7 +85,7 @@ def parser(model_path, base_folder, image_q, title_q):
             print("Loaded model {} : {}".format(model_path, datetime.now().strftime('%H:%M:%S')))
 
             while True:
-                print(image_q.qsize())
+                print("Model Path {} - Q Size{}".format(model_path, image_q.qsize()))
                 (img, timestamp) = image_q.get()
                 print("Setting up prediction || {} - {}".format(model_path, timestamp))
                 prediction = model.predict_classes(img)[0][0]
@@ -103,8 +103,7 @@ def record_mapping(output, at_bat_title_q, name_title_q):
 
     print("Opening recorder file")
 
-    with open(output, "a") as f:
-        player_name = name_title_q.get()
+    with open(output, "a+") as f:
         while True:
             if not name_title_q.empty():
                 player_name = name_title_q.get()
@@ -112,6 +111,7 @@ def record_mapping(output, at_bat_title_q, name_title_q):
                 if not at_bat_title_q.empty():
                     at_bat_img_title = at_bat_title_q.get()
                     f.write("{},{}\n".format(player_name, at_bat_img_title))
+                    print("~~~~~~~~~saved~~~~~~~~~~~")
 
 
 def start_pipeline(delay, thumbnail_size):
@@ -131,39 +131,6 @@ def start_pipeline(delay, thumbnail_size):
     base_folder_names = "./matchups/names/"
 
     record_file = "./record.csv"
-
-    """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        at_bat_executor = executor.submit(parser, at_bat_model, at_bat_image_q, at_bat_title_q)
-
-        name_executor = executor.submit(parser, name_model, name_image_q, name_title_q)
-
-        recorder_executor = executor.submit(record_mapping, record_file, at_bat_title_q, name_title_q)
-
-
-        image_capture_executor = executor.submit(capture_image,
-                                                 SCREEN_POSITIONS.get('monitor_top_left'),
-                                                 delay,
-                                                 thumbnail_size,
-                                                 name_image_q,
-                                                 at_bat_image_q)
-
-
-        executor.shutdown()
-
-    tasks = []
-    tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
-        parser, at_bat_model, at_bat_image_q, at_bat_title_q))
-    tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
-        parser, name_model, name_image_q, name_title_q))
-    tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
-        record_mapping, record_file, at_bat_title_q, name_title_q))
-    tasks.append(concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(
-        capture_image, SCREEN_POSITIONS.get('monitor_top_left'), delay, thumbnail_size, name_image_q, at_bat_image_q))
-
-    concurrent.futures.wait(tasks)
-
-    """
 
     at_bat_thread = threading.Thread(target=parser, name="at_bat",
                                      args=(at_bat_model, base_folder_batter,
@@ -185,25 +152,4 @@ def start_pipeline(delay, thumbnail_size):
 
 
 if __name__ == "__main__":
-    start_pipeline(1, (300, 300))
-    """
-    model_path = "./models/namenet.hdf5"
-    model = keras.models.load_model(model_path)
-
-    thumbnail_size = (300,300)
-    with mss() as sct:
-        img = np.array(sct.grab(SCREEN_POSITIONS.get('monitor_top_left')))
-
-        resized = cv2.resize(img, thumbnail_size)
-        resized = cv2.cvtColor(resized, cv2.COLOR_RGBA2RGB)
-        resized = np.reshape(resized, (1, 300, 300, 3))
-        #resized = np.reshape(resized, (1))
-        print("!!!!!!!!!{}!!!!!!!!".format(np.shape(resized[0])))
-        start = datetime.now()
-        prediction = model.predict_classes(resized)
-        end = datetime.now()
-
-        filename = '{}.png'.format("11111----1")
-        cv2.imwrite(filename, resized[0])
-        print(end-start)
-    """
+    start_pipeline(4, (300, 300))
