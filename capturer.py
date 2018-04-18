@@ -73,7 +73,7 @@ def capture_image(screen_postion, delay, thumbnail_size, name_q, at_bat_q):
         print("capture image thread {}- name_q: {}".format(timestamp, name_q.qsize()))
         time.sleep(delay)
 
-def parser(model_path, image_q, title_q):
+def parser(model_path, base_folder, image_q, title_q):
     print("Loading model {} : {}".format(model_path, datetime.now().strftime('%H:%M:%S')))
     model = keras.models.load_model(model_path)
     print("Loaded model {} : {}".format(model_path, datetime.now().strftime('%H:%M:%S')))
@@ -122,7 +122,7 @@ def start_pipeline(delay, thumbnail_size):
     pathlib.Path('./matchups/batters/').mkdir(exist_ok=True)
     pathlib.Path('./matchups/names/').mkdir(exist_ok=True)
     base_folder_batter = "./matchups/batters/"
-    base_folder_batter = "./matchups/batters/"
+    base_folder_names = "./matchups/names/"
 
     record_file = "./record.csv"
 
@@ -160,17 +160,21 @@ def start_pipeline(delay, thumbnail_size):
     """
 
     at_bat_thread = threading.Thread(target=parser, name="at_bat",
-                                     args=(at_bat_model, at_bat_image_q, at_bat_title_q))
+                                     args=(at_bat_model, base_folder_batter,
+                                           at_bat_image_q, at_bat_title_q))
     name_thread = threading.Thread(target=parser, name="player_name",
-                                   args=(name_model, name_image_q, name_title_q))
+                                   args=(name_model, base_folder_names,
+                                         name_image_q, name_title_q))
     recorder_thread = threading.Thread(target=record_mapping, name="recorder",
                                        args=(record_file, at_bat_title_q, name_title_q))
     capture_thread = threading.Thread(target=capture_image, name="capture",
                                       args=(SCREEN_POSITIONS.get('monitor_top_left'), delay, thumbnail_size, name_image_q, at_bat_image_q))
 
-    capture_thread.start()
-    at_bat_thread.start()
     name_thread.start()
+    time.sleep(5)
+    at_bat_thread.start()
+    time.sleep(5)
+    capture_thread.start()
     recorder_thread.start()
 
 
