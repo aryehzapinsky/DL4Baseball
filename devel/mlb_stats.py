@@ -1,10 +1,12 @@
 import base64
 import requests
 
+#jsh2201
+
 ########################################################################
-# mlb_stats.py -- 
+# mlb_stats.py --
 # 	input: string last_name, string first_name
-#	returns: float SLG 
+#	returns: float SLG
 #
 # See bottom lines for demonstration
 ########################################################################

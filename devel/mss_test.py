@@ -6,6 +6,7 @@ import pytesseract
 from mss import mss, tools
 from PIL import Image
 
+#ayz2103
 class VideoSource():
     def __init__(self):
         self.video_boundary = None

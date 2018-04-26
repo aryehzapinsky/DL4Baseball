@@ -2,19 +2,21 @@ from keras.models import load_model
 from PIL import Image
 import numpy as np
 
+#jsh2201
+
 ############################################################################################
 #  Jonathan Herman jsh2201
 #  4/12/18
-#  
+#
 #  threads.py
 #      This script will get spun up twice by the main thread: once for the Name ConvNet
-#	(which passes through only frames that contain batters' names) and once for the 
-#	AB ConvNet (which passes through only images of batters at bat. 
-#      
+#	(which passes through only frames that contain batters' names) and once for the
+#	AB ConvNet (which passes through only images of batters at bat.
+#
 #      Input: (img, timestamp) tuples queued by main thread
-#      Output: (img, timestamp) tuples written to output queue (to be processed in 
+#      Output: (img, timestamp) tuples written to output queue (to be processed in
 #		main thread)
-# 	
+#
 ############################################################################################
 
 def main(model_path='./models/vgg_16.best.hdf5'):
@@ -33,7 +35,7 @@ def main(model_path='./models/vgg_16.best.hdf5'):
             queue = []
             print(prediction)
             q_in.task_done()
-        else: 
+        else:
             print('Queue is empty... exiting')
             break # take this out
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Authors Aryeh Zapinsky (ayz2103) and Jon Herman (jsh2201)
+
 import time
 from datetime import datetime
 
@@ -16,7 +18,7 @@ import tensorflow as tf
 
 from mss import mss, tools
 
-
+# ayz2103
 SCREEN_POSITIONS = dict(
     monitor_top_left = {'top': 176, 'left': 100, 'width': 640, 'height': 360},
     player_name_yes = {'top': 458, 'left': 308, 'width': 100, 'height': 30},
@@ -27,6 +29,7 @@ SCREEN_POSITIONS = dict(
     )
 
 def capture_frame(thumbnail_size, samples, delay, base_folder):
+    # ayz2103
     monitor = {'top': 176, 'left': 100, 'width': 640, 'height': 360}
 
     with mss() as sct:
@@ -41,6 +44,7 @@ def capture_frame(thumbnail_size, samples, delay, base_folder):
             time.sleep(delay)
 
 def collect_first_dataset():
+    # ayz2103, jsh2201
     top_level = pathlib.Path('./data_samples/').mkdir(exist_ok=True)
 
     current_run = datetime.now().strftime('%H-%M-%S')
@@ -57,6 +61,7 @@ def collect_second_dataset():
     capture_frame((300,300), 7200, 1, './'+str(current_dump))
 
 def capture_image(screen_postion, delay, thumbnail_size, name_q, at_bat_q):
+    # ayz2103
     # Delayed start up
     time.sleep(5)
 
@@ -76,6 +81,7 @@ def capture_image(screen_postion, delay, thumbnail_size, name_q, at_bat_q):
         time.sleep(delay)
 
 def parser(model_path, base_folder, image_q, title_q):
+    # jsh2201
     print("Loading model {} : {}".format(model_path, datetime.now().strftime('%H:%M:%S')))
     graph = tf.Graph()
     with graph.as_default():
@@ -100,7 +106,7 @@ def parser(model_path, base_folder, image_q, title_q):
                 print("*******************")
 
 def record_mapping(output, at_bat_title_q, name_title_q):
-
+    # ayz2103
     print("Opening recorder file")
 
     with open(output, "a+") as f:
@@ -115,7 +121,7 @@ def record_mapping(output, at_bat_title_q, name_title_q):
 
 
 def start_pipeline(delay, thumbnail_size):
-
+    # ayz2103, jsh2201
     name_image_q = queue.Queue()
     at_bat_image_q = queue.Queue()
     name_title_q = queue.Queue()
