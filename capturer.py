@@ -122,7 +122,7 @@ def start_pipeline(delay, thumbnail_size):
     at_bat_title_q = queue.Queue()
 
     at_bat_model = "./models/at_bat_net.hdf5"
-    name_model = "./models/namenet.hdf5"
+    name_model = "./models/namenet_initial_best.hdf5"
 
     pathlib.Path('./matchups/').mkdir(exist_ok=True)
     pathlib.Path('./matchups/batters/').mkdir(exist_ok=True)
