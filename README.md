@@ -1,7 +1,7 @@
 # DL4Baseball: Transfer Learning for Baseball Event Detection and Player Tagging
 By: Jonathan Herman and Aryeh Zapinsky
 
-[[https://github.com/username/repository/blob/master/img/octocat.png|alt=octocat]]
+[[https://github.com/DL4Baseball/DL4Baseball/blob/master/img/cover_pic.png|alt=coverpic]]
 
 ### Goal:
 The goal of the project is to set up a system that will automatically collect and label a dataset of batters at the plate.
