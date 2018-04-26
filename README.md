@@ -47,7 +47,6 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 
 ### Division of Labor:
 - Image capturing: Aryeh
->>>>>>> 229dcb09bb31b3a6cb8af99dc69ff90694c8bb10
 - Image preprocessing: Aryeh
 - Labelling name data: Jon
 - Labelling at-bat data: Aryeh
