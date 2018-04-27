@@ -23,10 +23,6 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 ├── capturer.py
 ├── devel
 │   ├── mlb_stats.py
-│   ├── mss_test.py
-│   ├── screenshot.py
-│   ├── tester.py
-│   └── threads.py
 │   ├── mss_test.py <br/>
 │   ├── screenshot.py <br/>
 │   ├── tester.py <br/>
