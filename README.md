@@ -19,13 +19,10 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 
 ./report/: Here we present our findings.  Both in the form of slides and a conference paper.
 
-├── README.md
-
-├── capturer.py
-
-├── devel
-
-│   ├── mlb_stats.py
+├── README.md <br/>
+├── capturer.py <br/>
+├── devel <br/>
+│   ├── mlb_stats.py <br/>
 │   ├── mss_test.py <br/>
 │   ├── screenshot.py <br/>
 │   ├── tester.py <br/>
@@ -46,9 +43,6 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 ├── record.csv <br/>
 └── report <br/>
    └── DL4Baseball.gslide <br/>
-
-6 directories, 24 files
-
 
 
 ### Division of Labor:
