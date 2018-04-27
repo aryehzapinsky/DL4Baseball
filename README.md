@@ -20,8 +20,11 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 ./report/: Here we present our findings.  Both in the form of slides and a conference paper.
 
 ├── README.md
+
 ├── capturer.py
+
 ├── devel
+
 │   ├── mlb_stats.py
 │   ├── mss_test.py <br/>
 │   ├── screenshot.py <br/>
