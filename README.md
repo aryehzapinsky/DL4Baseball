@@ -1,6 +1,9 @@
 # DL4Baseball: Transfer Learning for Baseball Event Detection and Player Tagging
 By: Jonathan Herman and Aryeh Zapinsky
 
+![alt text](https://github.com/aryehzapinsky/DL4Baseball/blob/master/cover_pic.png)
+<!-- ![alt_text](https://raw.githubusercontent.com/aryehzapinsky/DL4Baseball/master/cover_pic.png) -->
+
 ### Goal:
 The goal of the project is to set up a system that will automatically collect and label a dataset of batters at the plate.
 The purpose of this is to facilitate data collection to make deep learning in sports more accessible.
@@ -16,30 +19,30 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 
 ./report/: Here we present our findings.  Both in the form of slides and a conference paper.
 
-├── mlb_stats.py
-│   ├── mss_test.py
-│   ├── screenshot.py
-│   ├── tester.py
-│   └── threads.py
-├── history
-│   ├── fine_tune.csv
-│   └── vgg_16_entire.csv
-├── models
-│   ├── at_bat_net.hdf5
-│   ├── namenet.hdf5
-│   ├── namenet_entire_best.hdf5
-│   └── namenet_initial_best.hdf5
-├── notebooks
-│   ├── AtBatterNotebook.ipynb
-│   ├── AtBatterNotebook.py
-│   ├── PlayerNameNotebook.ipynb
-│   └── PlayerNameNotebook.py
-├── record.csv
-├── report
-│   ├── DL4Baseball.gslide
-
-6 directories, 24 files
-
+├── README.md <br/>
+├── capturer.py <br/>
+├── devel <br/>
+│   ├── mlb_stats.py <br/>
+│   ├── mss_test.py <br/>
+│   ├── screenshot.py <br/>
+│   ├── tester.py <br/>
+│   └── threads.py <br/>
+├── history <br/>
+│   ├── fine_tune.csv <br/>
+│   └── vgg_16_entire.csv <br/>
+├── models <br/>
+│   ├── at_bat_net.hdf5 <br/>
+│   ├── namenet.hdf5 <br/>
+│   ├── namenet_entire_best.hdf5 <br/>
+│   └── namenet_initial_best.hdf5 <br/>
+├── notebooks <br/>
+│   ├── AtBatterNotebook.ipynb <br/>
+│   ├── AtBatterNotebook.py <br/>
+│   ├── PlayerNameNotebook.ipynb <br/>
+│   └── PlayerNameNotebook.py <br/>
+├── record.csv <br/>
+└── report <br/>
+   └── DL4Baseball.gslide <br/>
 
 
 ### Division of Labor:
