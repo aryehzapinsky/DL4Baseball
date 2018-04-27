@@ -19,7 +19,14 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 
 ./report/: Here we present our findings.  Both in the form of slides and a conference paper.
 
-├── mlb_stats.py <br/>
+├── README.md
+├── capturer.py
+├── devel
+│   ├── mlb_stats.py
+│   ├── mss_test.py
+│   ├── screenshot.py
+│   ├── tester.py
+│   └── threads.py
 │   ├── mss_test.py <br/>
 │   ├── screenshot.py <br/>
 │   ├── tester.py <br/>
@@ -38,8 +45,8 @@ The purpose of this is to facilitate data collection to make deep learning in sp
 │   ├── PlayerNameNotebook.ipynb <br/>
 │   └── PlayerNameNotebook.py <br/>
 ├── record.csv <br/>
-├── report <br/>
-│   ├── DL4Baseball.gslide <br/>
+└── report <br/>
+   └── DL4Baseball.gslide <br/>
 
 6 directories, 24 files
 
